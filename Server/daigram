@@ -1,0 +1,22 @@
+npm i express mongoose socket.io dotenv cors multer jsonwebtoken bcrypt cookie-parser morgan envalid swagger-ui-express swagger-jsdoc @aws-sdk/client-s3 @aws-sdk/s3-request-presigner helmet compression 
+
+npm i -D typescript ts-node tsx nodemon @types/node @types/express @types/cors @types/cookie-parser @types/jsonwebtoken @types/multer @types/morgan @types/bcrypt @types/swagger-ui-express
+
+Server
+│
+├── src
+│   ├── config
+│   │     aws.ts
+│   │
+│   ├── middleware
+│   │     multer.ts
+│   │
+│   ├── services
+│   │     s3.service.ts
+│   │
+│   └── ...
+
+
+
+
+https://youtu.be/muM0MmcNzoo
