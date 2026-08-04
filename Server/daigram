@@ -20,3 +20,121 @@ Server
 
 
 https://youtu.be/muM0MmcNzoo
+
+Ye entity kya represent karti hai?
+Iske baare me kya information store karni hai?
+Future me is data se kya query karni padegi?
+
+
+Agar WhatsApp/Telegram jaisa app banana hai
+
+Phir dheere-dheere aur models ya features add hote hain:
+
+📞 Call
+👥 Group
+📎 Attachment (Image, PDF, Video)
+😊 Message Reaction (👍❤️😂)
+📝 Message Status (Sent, Delivered, Seen)
+🚫 Block User
+🌐 User Presence (Online/Offline) (kai apps me database ki jagah Redis/Socket state use hoti hai)
+
+Baad me agar app ko WhatsApp level tak le jana ho to add kar sakte ho:
+
+👥 Group
+📎 Attachment
+😊 Reaction
+🚫 BlockUser
+⭐ Story/Status
+
+
+<!--                 Next.js
+                   │
+                   ▼     otp
+      Express + Socket.io
+          │          │
+          │          ▼
+          │       Redis
+          │
+     ┌────┴───────────────┐
+     ▼                    ▼
+ MongoDB               AWS S3
+(Messages, Users)   (Images, Videos, Files) -->
+
+
+
+
+
+TypeScript
+✅ Express.js
+✅ Next.js
+✅ MongoDB
+✅ Mongoose
+✅ JWT
+✅ Socket.io
+✅ Redis
+✅ AWS S3
+✅ Multer
+✅ Docker
+✅ Swagger
+✅ Winston (Logging)
+✅ Helmet
+✅ Rate Limiting
+✅ Compression
+✅ CORS
+✅ Bcrypt
+✅ Zod/Yup Validation
+
+
+
+Bas ek advice: Features isi order me add karenge:
+
+Core Chat (User, Conversation, Message)
+Friend Requests
+Notifications
+Socket.io
+Calls
+AWS S3 (Media Upload)
+Redis
+Docker
+Deployment
+
+
+Phase 1
+✔ User
+✔ FriendRequest
+✔ Conversation
+✔ Message
+✔ Notification
+✔ Call
+
+↓
+
+Controllers
+
+↓
+
+Routes
+
+↓
+
+Socket.io
+
+↓
+
+Frontend
+
+↓
+
+AWS S3
+
+↓
+
+Redis
+
+↓
+
+Docker
+
+↓
+
+Deployment
