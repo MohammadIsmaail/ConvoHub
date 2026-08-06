@@ -15,13 +15,14 @@ export const UserRegisterController = async (req: any, res: any) => {
         const hashPassword = await bcrypt.hash(password, 10);
        const data = new UserModel({name, email, mobile, password:hashPassword});
        const result = await data.save();
-       createResponse(res, true, 200, "User registered successfully", result, false);
+       const user:any = result.toObject();
+       delete user.password ;
+       return createResponse(res, true, 200, "User registered successfully", user, false);
     }
   } catch (error:any) {
     return createResponse(res, false, 500, error.message, [], true);
   }
 }
-
 
 export const UserLoginController = async (req: any, res: any) => {
   try {
@@ -31,17 +32,18 @@ export const UserLoginController = async (req: any, res: any) => {
     if(isExist){
         const result = await bcrypt.compare(password, isExist.password);
         if(result){
-            const payload = {email : isExist.email,id:isExist._1}
+            const payload = {email : isExist.email,id:isExist._id}
             const token = GenerateToken(payload);
-            const { password, ...userWithoutPassword } = isExist.toObject();
-            createResponse(res, true, 200, "User logged in successfully", {...userWithoutPassword, token}, false);
+            const user:any = isExist.toObject();
+            delete user.password ;
+            return createResponse(res, true, 200, "User logged in successfully", {...user,token}, false);
         }
         else{
-            createResponse(res, false, 400, "Invalid credentials", [], true);
+            return createResponse(res, false, 400, "Invalid credentials", [], true);
         }
     }
     else{
-        createResponse(res, false, 400, "User not found", [], true);
+        return createResponse(res, false, 400, "User not found", [], true);
     }
   } catch (error:any) {
     return createResponse(res, false, 500, error.message, [], true);
