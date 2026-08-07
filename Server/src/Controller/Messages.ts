@@ -1,5 +1,6 @@
 import createResponse from "../Helper/CreateResponse";
 import ConversationModel from "../Modules/Conversation";
+import FriendRequestModel from "../Modules/FriendRequest";
 import MessageModel from "../Modules/Message";
 import UserModel from "../Modules/UserModel";
 
@@ -56,8 +57,7 @@ export const GetMyConversationsController = async (req:any,res:any)=>{
         if(conversations.length === 0){
             return createResponse(res, true, 200, "No conversations found", [], false);
         }
-                const formattedConversations = conversations.map((conversation: any) => {
-
+            const formattedConversations = conversations.map((conversation: any) => {
             const friend = conversation.members.find(
                 (member: any) => member._id.toString() !== id
             );
@@ -74,8 +74,7 @@ export const GetMyConversationsController = async (req:any,res:any)=>{
        return createResponse(res, false, 500, error.message, [], true);
     }
 }
-
-export const CreateConversationController = async (req:any,res:any)=>
+export const CreateConversationController = async (req:any,res:any)=>{
     try{
         const senderId = req.user.id;
         const { receiverId } = req.body;
@@ -87,22 +86,50 @@ export const CreateConversationController = async (req:any,res:any)=>
         if(senderId === receiverId){
             return createResponse(res, false, 400, "You cannot create a conversation with yourself", [], true);
         }
-        // 5. Check karo dono friends hain?
+        const friendship = await FriendRequestModel.findOne({status: "accepted",$or: [
+        { sender: senderId, receiver: receiverId }, { sender: receiverId, receiver: senderId }]});
+                // 5. Check karo dono friends hain?
         // FriendRequest status = accepted
-
+        if(!friendship){
+            return createResponse(res, false, 403, "You are not friends with this user", [], true);
+        }
         // 6. Check karo conversation pehle se exist hai?
         // members me senderId aur receiverId dono hone chahiye
-
-        // 7. Agar exist hai
-        // wahi conversation return kar do
-
-        // 8. Nayi conversation create karo
-
-        // 9. Save karo
-
-        // 10. Success response return karo
-
+        const isExistConversation = await ConversationModel.findOne({ members: { $all: [senderId, receiverId] } });
+        if(isExistConversation){
+            return createResponse(res, true, 200, "Conversation already exists", isExistConversation, false);
+        }else{
+            const conversation = new ConversationModel({ members: [senderId, receiverId] });
+            await conversation.save();
+            return createResponse(res, true, 200, "Conversation created successfully", conversation, false);
+        }
     }catch(error:any){
         return createResponse(res, false, 500, error.message, [], true);
+    }
+}
+
+// Message Seen
+
+export const MarkMessagesSeenController = async (req:any,res:any)=>{
+    try{
+
+        const { conversationId } = req.body;
+        const userId = req.user.id;
+
+        // 1. Conversation exist?
+        const conversation = await ConversationModel.findById(conversationId);
+
+        // 2. User member hai?
+
+        // 3. Messages find karo
+        // isSeen = false
+
+        // 4. Update many
+        // isSeen = true
+
+        // 5. Success response
+
+    }catch(error:any){
+        return createResponse(res,false,500,error.message,[],true);
     }
 }
