@@ -103,30 +103,27 @@ export const RejectFriendRequestController = async (req:any,res:any)=>{
         return createResponse(res, false, 500, error.message, [], true);
     }
 }
-
 export const FriendsListController = async (req:any,res:any)=>{
     try{
-
-        // 1. Login user id
         const { id } = req.user;
-
-        // 2. Accepted requests find karo
-        // sender = id OR receiver = id
-        // status = accepted
-
-        // 3. Populate sender
-        // 4. Populate receiver
-
-        // 5. Friends array banao
-
-        // 6. Login user ko remove karke
-        // doosre user ko friend banao
-
-        // 7. Response return
-
+        const acceptedRequests = await FriendRequestModel.find({
+            $or: [{ sender: id }, { receiver: id }],
+            status: "accepted"
+        }).populate("sender", "name email profileImage")
+          .populate("receiver", "name email profileImage");
+        if(acceptedRequests.length === 0) {
+            return createResponse(res, true, 200, "No friends found", [], false);
+        }else{
+            const friendsList = acceptedRequests.map(request => {
+                if(request.sender._id.toString() === id){
+                    return request.receiver;
+                }else{
+                    return request.sender;
+                }   
+        });
+        return createResponse(res, true, 200, "Friends list fetched successfully", friendsList, false);
+    }
     }catch(error:any){
-
-        // Error response
-
+           return createResponse(res, false, 500, error.message, [], true);
     }
 }
