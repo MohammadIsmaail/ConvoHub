@@ -1,6 +1,7 @@
 import createResponse from "../Helper/CreateResponse";
 import ConversationModel from "../Modules/Conversation";
 import MessageModel from "../Modules/Message";
+import UserModel from "../Modules/UserModel";
 
 export const SendMessageController = async (req:any,res:any)=>{
     try{
@@ -20,22 +21,87 @@ export const SendMessageController = async (req:any,res:any)=>{
         return createResponse(res, false, 500, error.message, [], true);
     }
 }
-
 export const GetMessagesController = async (req:any,res:any)=>{
     try{
         // 1. conversationId lo
+        const id = req.user.id;
         const { conversationId } = req.params;
         // 2. Check conversation exist karti hai?
         const conversation = await ConversationModel.findById(conversationId);
         if (!conversation) {
             return createResponse(res, false, 404, "Conversation not found", [], true);
         }
-        const messages = await MessageModel.find({ conversation: conversationId }).populate("sender", "name email");
+         const isMember = conversation.members.some(
+            (member: any) => member.toString() === id);
+        if (!isMember) {
+            return createResponse(res,false,403,"You are not authorized to view this conversation",[],true);
+         }
+        const messages = await MessageModel.find({ conversation: conversationId }).populate("sender", "name email").sort({ createdAt: 1 });
         if (messages.length === 0) {
             return createResponse(res, true, 200, "No messages found", [], false);
         } else {
             return createResponse(res, true, 200, "Messages fetched successfully", messages, false);
         }
+    }catch(error:any){
+        return createResponse(res, false, 500, error.message, [], true);
+    }
+}
+export const GetMyConversationsController = async (req:any,res:any)=>{
+    try{
+
+        const { id } = req.user;
+
+        // members array me login user ko search 
+        const conversations = await ConversationModel.find({ members: id }).populate("members", "name email profileImage").sort({ updatedAt: -1 });
+        if(conversations.length === 0){
+            return createResponse(res, true, 200, "No conversations found", [], false);
+        }
+                const formattedConversations = conversations.map((conversation: any) => {
+
+            const friend = conversation.members.find(
+                (member: any) => member._id.toString() !== id
+            );
+            return {
+                conversationId: conversation._id,
+                friend,
+                createdAt: conversation.createdAt,
+                updatedAt: conversation.updatedAt
+            };
+        });
+        return createResponse(res,true,200,"Conversations fetched successfully",formattedConversations,false);
+
+    }catch(error:any){
+       return createResponse(res, false, 500, error.message, [], true);
+    }
+}
+
+export const CreateConversationController = async (req:any,res:any)=>
+    try{
+        const senderId = req.user.id;
+        const { receiverId } = req.body;
+
+        const receiver = await UserModel.findById(receiverId);
+        if(!receiver){
+            return createResponse(res, false, 404, "Receiver not found", [], true);
+        }
+        if(senderId === receiverId){
+            return createResponse(res, false, 400, "You cannot create a conversation with yourself", [], true);
+        }
+        // 5. Check karo dono friends hain?
+        // FriendRequest status = accepted
+
+        // 6. Check karo conversation pehle se exist hai?
+        // members me senderId aur receiverId dono hone chahiye
+
+        // 7. Agar exist hai
+        // wahi conversation return kar do
+
+        // 8. Nayi conversation create karo
+
+        // 9. Save karo
+
+        // 10. Success response return karo
+
     }catch(error:any){
         return createResponse(res, false, 500, error.message, [], true);
     }
