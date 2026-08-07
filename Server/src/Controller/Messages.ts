@@ -118,8 +118,17 @@ export const MarkMessagesSeenController = async (req:any,res:any)=>{
 
         // 1. Conversation exist?
         const conversation = await ConversationModel.findById(conversationId);
+        if (!conversation) {
+            return createResponse(res, false, 404, "Conversation not found", [], true);
+        }
 
         // 2. User member hai?
+        const isMember = conversation.members.some(
+            (member: any) => member.toString() === userId
+        );
+        if (!isMember) {
+            return createResponse(res, false, 403, "You are not a member of this conversation", [], true);
+        }
 
         // 3. Messages find karo
         // isSeen = false
