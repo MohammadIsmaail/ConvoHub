@@ -107,9 +107,7 @@ export const CreateConversationController = async (req:any,res:any)=>{
         return createResponse(res, false, 500, error.message, [], true);
     }
 }
-
 // Message Seen
-
 export const MarkMessagesSeenController = async (req:any,res:any)=>{
     try{
 
@@ -129,10 +127,15 @@ export const MarkMessagesSeenController = async (req:any,res:any)=>{
         if (!isMember) {
             return createResponse(res, false, 403, "You are not a member of this conversation", [], true);
         }
-
         // 3. Messages find karo
         // isSeen = false
-
+        const messages = await MessageModel.find({ conversation: conversationId, isSeen: false, sender: { $ne: userId } });
+        if(messages.length === 0){
+            return createResponse(res, true, 200, "No unseen messages found", [], false);
+        }else{
+            await MessageModel.updateMany({ conversation: conversationId, isSeen: false, sender: { $ne: userId } }, { $set: { isSeen: true } });
+            return createResponse(res, true, 200, "Messages marked as seen successfully", [], false);
+        }
         // 4. Update many
         // isSeen = true
 
@@ -142,3 +145,24 @@ export const MarkMessagesSeenController = async (req:any,res:any)=>{
         return createResponse(res,false,500,error.message,[],true);
     }
 }
+//  Latest Conversation Find
+export const GetLatestConversationsController = async (req:any,res:any)=>{
+    try{
+        const { id } = req.user;
+        const conversations = await ConversationModel.find({ members: id }).populate("members", "name email profileImage").sort({ updatedAt: -1 });
+        if(conversations.length === 0){
+            return createResponse(res, true, 200, "No conversations found", [], false);
+        }
+        const Friends = await Promise.all(conversations.map(async (conversation: any) => {
+            const friend = conversation.members.find(
+                (member: any) => member._id.toString() !== id
+            );
+            const latestMessage = await MessageModel.findOne({ conversation: conversation._id }).sort({ createdAt: -1 });
+            return {conversationId: conversation._id,friend,latestMessage};
+            }));
+            return createResponse(res,true,200,"Latest conversations fetched successfully",Friends,false);
+    }catch(error:any){
+        return createResponse(res,false,500,error.message,[],true);
+    }
+}
+

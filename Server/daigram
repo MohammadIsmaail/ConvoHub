@@ -137,4 +137,33 @@ Docker
 
 ↓
 
-Deployment
+
+
+
+Phase 2 (Advanced Backend)
+🔜 Last Message in Conversation
+🔜 Unread Message Count
+
+Phase 3 (Real Time)
+🔜 Socket.IO Setup
+🔜 Real-Time Messages
+🔜 Online/Offline Status
+🔜 Typing Indicator
+🔜 Real-Time Seen Status
+
+Phase 4 (Extra Features)
+🔜 Search Friends
+🔜 Delete Message
+🔜 Edit Message
+----------------
+
+Frontend (Largest Part)
+14. Login Page
+15. Register Page
+16. Friends Page
+17. Chat Sidebar
+18. Conversation List
+19. Chat Window
+20. Send Message UI
+21. Seen Status UI
+22. Socket Integration
