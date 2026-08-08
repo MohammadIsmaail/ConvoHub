@@ -14,9 +14,9 @@ export const SendMessageController = async (req:any,res:any)=>{
         if(!data){
             return createResponse(res, false, 404, "Conversation not found", [], true);
         }
-        const isMember = data.members.some(member:any)=>{
+         const isMember = data.members.some((member:any)=>{
             return member.toString() === senderId;
-        }
+        });
         if(!isMember){
             return createResponse(res, false, 403, "You are not a member of this conversation", [], true);
         }
@@ -185,26 +185,37 @@ export const GetUnreadMessageCountController = async (req:any,res:any)=>{
 
 export const GetConversationUnreadCountController = async (req:any,res:any)=>{
     try{
-
         const { id } = req.user;
+        const conversations = await ConversationModel.find({
+            members: id
+        })
+        .populate("members", "name email profileImage")
+        .sort({ updatedAt: -1 });
 
-        // 1. Meri conversations nikalo
+        if(conversations.length === 0){
+            return createResponse(res,true,200, "No conversations found", [],false);}
+        const data = await Promise.all(
+            conversations.map(async (conversation:any)=>{
 
-        // 2. Har conversation par loop chalao
+                const friend = conversation.members.find(
+                    (member:any)=> member._id.toString() !== id
+                );
 
-        // 3. Friend nikalo
+                const unreadCount = await MessageModel.countDocuments({
+                    conversation: conversation._id,
+                    isSeen: false,
+                    sender: { $ne: id }
+                });
 
-        // 4. Unread messages count karo
-        // isSeen = false
-        // sender != login user
-
-        // 5. Return karo
-        // conversationId
-        // friend
-        // unreadCount
-
-        // 6. Success response
-
+                return {
+                    conversationId: conversation._id,
+                    friend,
+                    unreadCount
+                };
+            })
+        );
+        return createResponse(res,true,200,
+            "Conversations with unread count fetched successfully",data,false);
     }catch(error:any){
         return createResponse(res,false,500,error.message,[],true);
     }
