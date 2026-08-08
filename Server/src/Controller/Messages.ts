@@ -14,6 +14,12 @@ export const SendMessageController = async (req:any,res:any)=>{
         if(!data){
             return createResponse(res, false, 404, "Conversation not found", [], true);
         }
+        const isMember = data.members.some(member:any)=>{
+            return member.toString() === senderId;
+        }
+        if(!isMember){
+            return createResponse(res, false, 403, "You are not a member of this conversation", [], true);
+        }
         const msg = new MessageModel({sender: senderId,conversation:conversationId,content: content,});
         await msg.save();
         return createResponse(res, true, 200, "Message sent successfully", msg, false);
@@ -110,7 +116,6 @@ export const CreateConversationController = async (req:any,res:any)=>{
 // Message Seen
 export const MarkMessagesSeenController = async (req:any,res:any)=>{
     try{
-
         const { conversationId } = req.body;
         const userId = req.user.id;
 
@@ -165,4 +170,42 @@ export const GetLatestConversationsController = async (req:any,res:any)=>{
         return createResponse(res,false,500,error.message,[],true);
     }
 }
+// Unread Message Count
+export const GetUnreadMessageCountController = async (req:any,res:any)=>{
+    try{
+        const { id } = req.user;
+        // const unreadCount = await MessageModel.countDocuments({ conversation: { $in: await ConversationModel.find({ members: id }).distinct("_id") }, isSeen: false, sender: { $ne: id } });
+        const conversationIds = await ConversationModel.find({members: id}).distinct("_id");
+        const unreadCount = await MessageModel.countDocuments({conversation: {$in: conversationIds},isSeen: false,sender: {$ne: id}});
+        return createResponse(res,true,200,"Unread message count fetched successfully",{unreadCount},false);
+    }catch(error:any){
+        return createResponse(res,false,500,error.message,[],true);
+    }
+}
 
+export const GetConversationUnreadCountController = async (req:any,res:any)=>{
+    try{
+
+        const { id } = req.user;
+
+        // 1. Meri conversations nikalo
+
+        // 2. Har conversation par loop chalao
+
+        // 3. Friend nikalo
+
+        // 4. Unread messages count karo
+        // isSeen = false
+        // sender != login user
+
+        // 5. Return karo
+        // conversationId
+        // friend
+        // unreadCount
+
+        // 6. Success response
+
+    }catch(error:any){
+        return createResponse(res,false,500,error.message,[],true);
+    }
+}
