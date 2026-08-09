@@ -157,6 +157,21 @@ Phase 4 (Extra Features)
 🔜 Edit Message
 ----------------
 
+1. Socket.IO Setup
+Frontend (React/Next)
+        |
+        |
+    Socket.IO Client
+        |
+        |
+Backend (Express)
+        |
+    Socket.IO Server
+2. User Online/Offline Status
+3. Typing Indicator
+4. Real-time Message Receive
+5. Real-time Seen Status
+
 Frontend (Largest Part)
 14. Login Page
 15. Register Page
