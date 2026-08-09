@@ -207,3 +207,55 @@ Frontend (Largest Part)
 ⭐ Message Reactions
 ⭐ Delete for Everyone
 ⭐ Edit Message
+
+//
+❌ Delete Message
+❌ Edit Message
+
+❌ Notification Model
+❌ Send Notification
+❌ Get Notifications
+❌ Mark Notification Read
+❌ Real-Time Notification
+
+❌ Call Model
+❌ Audio Call
+❌ Video Call
+❌ Call History
+
+❌ Multer Setup
+❌ AWS S3 Integration
+❌ Image Sharing
+❌ Video Sharing
+❌ File Sharing
+❌ Voice Notes
+
+❌ Message Reactions (👍 ❤️ 😂)
+❌ Delete For Everyone
+❌ Read Receipt Timestamp
+❌ Last Seen
+❌ Block User
+
+❌ Group Model
+❌ Create Group
+❌ Add Member
+❌ Remove Member
+❌ Group Admin
+❌ Group Messages
+
+❌ Search Messages
+
+❌ Redis Setup
+❌ Redis Adapter
+❌ OTP Storage in Redis
+❌ Online Users Cache
+
+❌ Winston Logging
+❌ Rate Limiting
+❌ Swagger Documentation
+❌ Dockerfile
+❌ Docker Compose
+❌ CI/CD Pipeline
+
+❌ Multiple Device Login
+❌ Push Notifications
