@@ -2,6 +2,18 @@ npm i express mongoose socket.io dotenv cors multer jsonwebtoken bcrypt cookie-p
 
 npm i -D typescript ts-node tsx nodemon @types/node @types/express @types/cors @types/cookie-parser @types/jsonwebtoken @types/multer @types/morgan @types/bcrypt @types/swagger-ui-express
 
+netstat -ano | findstr :3000
+taskkill /PID 12345 /F
+
+const onlineUsers = new Map();
+
+onlineUsers.set("user1", "socket123");
+onlineUsers.set("user2", "socket456");
+onlineUsers.set(userId, socketId);   // Add
+onlineUsers.get(userId);             // Get
+onlineUsers.has(userId);             // Check
+onlineUsers.delete(userId);          // Remove
+
 Server
 │
 ├── src
@@ -182,3 +194,16 @@ Frontend (Largest Part)
 20. Send Message UI
 21. Seen Status UI
 22. Socket Integration
+
+
+
+⭐ Multiple Device Login
+⭐ Redis Adapter (Scaling)
+⭐ File/Image Sharing
+⭐ Voice Notes
+⭐ Read Receipt Timestamp
+⭐ Last Seen
+⭐ Push Notifications
+⭐ Message Reactions
+⭐ Delete for Everyone
+⭐ Edit Message
