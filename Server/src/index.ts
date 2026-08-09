@@ -71,7 +71,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", async (data) => {
-    const senderId = socket.data.user.id;
+    try{
+      const senderId = socket.data.user.id;
     const { conversationId, content } = data;
 
     const conversation = await ConversationModel.findById(conversationId);
@@ -99,6 +100,9 @@ io.on("connection", (socket) => {
     );
 
     io.to(conversationId).emit("newMessage", populatedMessage);
+    }catch(error:any){
+        console.error("Error sending message:", error.message);
+    }
   });
 
   socket.on("disconnect", () => {
