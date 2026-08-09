@@ -104,6 +104,42 @@ io.on("connection", (socket) => {
         console.error("Error sending message:", error.message);
     }
   });
+  // type indicator
+  socket.on("typing", (conversationId: string) => {
+
+    socket.to(conversationId).emit("userTyping", {
+        userId: socket.data.user.id
+    });
+
+});
+
+// stop typing
+
+socket.on("stopTyping", (conversationId: string) => {
+
+    socket.to(conversationId).emit("userStopTyping", {
+        userId: socket.data.user.id
+    });
+
+});
+//  Real-Time Seen Status
+socket.on("markSeen",async(conversationId:string)=>{
+    const userId= socket.data.user.id;
+    await MessageModel.updateMany({
+        conversation:conversationId,
+        isSeen:false,
+        sender:{$ne:userId}
+    },
+     {
+        $set:{
+            isSeen:true
+        }
+     }
+    );
+    io.to(conversationId).emit("messagesSeen",{
+        conversationId
+    })
+})
 
   socket.on("disconnect", () => {
     onlineUsers.delete(userId);
