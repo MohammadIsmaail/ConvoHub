@@ -259,3 +259,35 @@ Frontend (Largest Part)
 
 ❌ Multiple Device Login
 ❌ Push Notifications
+
+src
+├── app
+│   ├── login
+│   ├── register
+│   ├── friends
+│   ├── chat
+│   └── profile
+│
+├── components
+│   ├── Sidebar
+│   ├── ChatWindow
+│   ├── MessageBubble
+│   ├── FriendList
+│   └── Navbar
+│
+├── services
+│   ├── api.ts
+│   └── socket.ts
+│
+├── store
+│   └── redux
+│
+└── types
+
+authSlice
+├── user
+├── token
+└── isAuthenticated
+
+conversationSlice
+└── selectedConversation
