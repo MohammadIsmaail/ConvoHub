@@ -32,4 +32,14 @@ src
 │
 ├── types
 │
-└── utils
+└── 
+
+// Redux Setup file complete
+Frontend Setup
+│
+├── Redux Setup             ✅
+│   ├── authSlice.ts        ✅
+│   ├── rootReducer.ts      ✅
+│   ├── store.ts            ✅
+│   ├── ReduxProvider.tsx   ✅
+│   └── layout.tsx          ✅
