@@ -1,0 +1,35 @@
+npm install axios bootstrap socket.io-client @reduxjs/toolkit react-redux
+src
+│
+├── app
+│   ├── login
+│   │   └── page.tsx
+│   │
+│   ├── register
+│   │   └── page.tsx
+│   │
+│   ├── chat
+│   │   └── page.tsx
+│   │
+│   ├── layout.tsx
+│   └── page.tsx
+│
+├── components
+│
+├── redux
+│   ├── store.ts
+│   ├── rootReducer.ts
+│   │
+│   └── slices
+│       ├── authSlice.ts
+│       ├── conversationSlice.ts
+│       ├── onlineUsersSlice.ts
+│       └── notificationSlice.ts
+│
+├── services
+│   ├── api.ts
+│   └── socket.ts
+│
+├── types
+│
+└── utils
