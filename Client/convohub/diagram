@@ -43,3 +43,31 @@ Frontend Setup
 │   ├── store.ts            ✅
 │   ├── ReduxProvider.tsx   ✅
 │   └── layout.tsx          ✅
+
+
+
+landing page tume abhi ke liye simple bana ke diye ho na baad main aur accha karenge
+
+Haan, bilkul. 👍
+
+Abhi jo landing page banaya hai wo basic/initial version hai, taaki project ka frontend flow start ho jaye.
+
+Baad me jab authentication aur chat functionality complete ho jayegi, landing page ko properly polish karenge:
+
+Current
+↓
+Simple Bootstrap Landing Page
+
+Later
+↓
+✨ Better Hero Section
+✨ Professional Navbar
+✨ Better Chat Preview
+✨ Animations
+✨ Responsive Design
+✨ Feature Cards
+✨ Testimonials / Stats
+✨ Modern Footer
+✨ Better colors & typography
+
+Abhi design par zyada time nahi lagayenge. Pehle functionality complete karna better hai.
