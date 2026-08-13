@@ -10,11 +10,7 @@ import { toast } from "sonner";
 
 import { loginUser } from "@/services/auth";
 import { LoginData } from "@/types/auth";
-import {
-  setToken,
-  setUser,
-  setIsAuthenticated,
-} from "@/redux/slices/authSlice";
+import { setToken, setUser, setIsAuthenticated,} from "@/redux/slices/authSlice";
 
 const loginSchema = yup.object({
   email: yup
