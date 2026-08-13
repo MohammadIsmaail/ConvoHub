@@ -24,7 +24,7 @@ const registerSchema = yup.object({
         .email("Enter a valid email"),
 
     mobile: yup
-        .number()
+        .string()
         .typeError("Mobile number must be a number")
         .required("Mobile number is required"),
 

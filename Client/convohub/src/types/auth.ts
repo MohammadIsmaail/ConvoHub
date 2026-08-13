@@ -1,6 +1,6 @@
 export interface RegisterData {
     name: string;
     email: string;
-    mobile:number;
+    mobile:string;
     password: string;
 }

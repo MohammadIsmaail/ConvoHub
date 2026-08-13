@@ -291,3 +291,31 @@ authSlice
 
 conversationSlice
 └── selectedConversation
+
+
+
+
+//
+Dear Hiring Manager,
+
+I hope you are doing well.
+
+My name is Ismaail, and I recently completed my B.Tech in Computer Science & Engineering (Artificial Intelligence) from Dr. A.P.J. Abdul Kalam Technical University (AKTU), Lucknow.
+
+I have 9 months of hands-on internship experience as a Full Stack Developer at Techpile Technology Pvt. Ltd., where I worked on real-world web applications. During my internship, I developed a *Learning Management System (PERN Stack)* and a *Hospital Management System (MERN Stack)*, implementing features such as JWT authentication, role-based access control, REST APIs, PostgreSQL, MongoDB, TypeORM, and Redux Toolkit.
+
+My technical skills include *React.js, Next.js, Node.js, Express.js, MongoDB, PostgreSQL, TypeScript, JavaScript, Redux Toolkit, Git, and REST APIs*.
+
+I am currently looking for a Full Stack/MERN Stack Developer opportunity where I can contribute to the team while continuing to grow as a developer. I am available to join immediately.
+
+You can find my work here:
+
+*Portfolio:* https://ismaail.vercel.app
+*GitHub:* https://github.com/MohammadIsmaail
+
+I would be grateful for the opportunity to discuss how my skills and experience can add value to your team. Thank you for your time and consideration. I look forward to hearing from you.
+
+Kind regards,
+
+*Ismaail*
+📞 +91 8840365746
