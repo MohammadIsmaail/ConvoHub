@@ -7,4 +7,5 @@ const api = axios.create({
     }
 })
 
+api.interceptor
 export default api
