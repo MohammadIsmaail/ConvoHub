@@ -1,8 +1,14 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import authReducer from "@/redux/slices/authSlice"
+import conversationReducer from "./slices/conversationSlice";
+import onlineUsersReducer from "@/redux/slices/onlineUsersSlice";
+import notificationReducer from "@/redux/slices/notificationSlice";
 
-const rootReducer=combineReducers({
-    auth:authReducer
+export const rootReducer=combineReducers({
+    auth:authReducer,
+    conversation:conversationReducer,
+    onlineUsers: onlineUsersReducer,
+    notification: notificationReducer
     // {
     //     token:"",
     //     user:{},
@@ -11,4 +17,3 @@ const rootReducer=combineReducers({
     // }
 })
 
-export default rootReducer
