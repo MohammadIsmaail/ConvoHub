@@ -73,3 +73,20 @@ Later
 Abhi design par zyada time nahi lagayenge. Pehle functionality complete karna better hai.
 
 Persist Login: Reffress hone per token null ho jata hai is liye token ko local storage main rekenge
+
+logout: (state) => {
+
+    state.token = null;
+    state.user = null;
+    state.isAuthenticated = false;
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+}
+
+dispatch(logout());
+
+localStorage.removeItem("token");
+localStorage.removeItem("user");
+
+router.push("/login");

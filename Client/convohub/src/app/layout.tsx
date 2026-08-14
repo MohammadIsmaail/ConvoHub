@@ -4,6 +4,8 @@ import "./globals.css";
 import "bootstrap/dist/css/bootstrap.min.css"
 import ReduxProvider from "@/providers/ReduxProvider"
 import { Toaster } from "sonner";
+import AuthInitializer from "@/components/AuthInitializer";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,6 +27,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
         <ReduxProvider>
+          <AuthInitializer />
          {children}
           <Toaster />
         </ReduxProvider>
