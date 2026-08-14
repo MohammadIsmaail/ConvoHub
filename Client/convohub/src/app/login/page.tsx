@@ -42,6 +42,8 @@ const Login = () => {
       const response = await loginUser(data);
 
       if (response.success) {
+        localStorage.setItem( "token",response.token);
+        localStorage.setItem("user",JSON.stringify(response.data));
         dispatch(setToken(response.token));
         dispatch(setUser(response.data));
         dispatch(setIsAuthenticated(true));
