@@ -92,3 +92,41 @@ localStorage.removeItem("user");
 router.push("/login");
 
 //////////////////////////////////////
+src
+│
+├── app
+│   └── chat
+│       └── page.tsx
+│
+├── components
+│   └── chat
+│       ├── Sidebar.tsx
+│       ├── ChatHeader.tsx
+│       ├── MessageContainer.tsx
+│       └── MessageInput.tsx
+
+
+
+Goal
+
+Abhi UI simple rakhenge:
+
+Sidebar
+├── Search User
+├── User List
+
+
+Chat Area
+├── Header
+├── Messages
+└── Input
+
+Baad me:
+
+Online Indicator
+Last Message
+Unread Count
+Typing Indicator
+Seen Status
+Emoji
+File Upload

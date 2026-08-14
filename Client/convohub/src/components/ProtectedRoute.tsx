@@ -1,5 +1,5 @@
 import { RootState } from "@/redux/store";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { ReactNode, useEffect } from "react";
 import { useSelector } from "react-redux";
 

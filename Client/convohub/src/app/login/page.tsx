@@ -36,7 +36,7 @@ const Login = () => {
   } = useForm<LoginData>({
     resolver: yupResolver(loginSchema),
   });
-
+  
   const onSubmit = async (data: LoginData) => {
     try {
       const response = await loginUser(data);
