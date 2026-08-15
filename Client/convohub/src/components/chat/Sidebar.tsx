@@ -1,10 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+
 import { getFriends } from "@/services/friend";
 import { createConversation } from "@/services/conversation";
-import { useDispatch } from "react-redux";
-import { setSelectedConversation } from "@/redux/slices/conversationSlice";
+import { getMessages } from "@/services/message";
+
+import {
+    setSelectedConversation,
+    setMessages,
+} from "@/redux/slices/conversationSlice";
 
 const Sidebar = () => {
     const [friends, setFriends] = useState<any[]>([]);
@@ -27,12 +33,23 @@ const Sidebar = () => {
             const response = await createConversation(friend._id);
 
             if (response.success) {
+
                 dispatch(
                     setSelectedConversation({
                         conversationId: response.data._id,
                         friend,
                     })
                 );
+
+                const messageResponse = await getMessages(
+                    response.data._id
+                );
+
+                if (messageResponse.success) {
+                    dispatch(
+                        setMessages(messageResponse.data)
+                    );
+                }
             }
         } catch (error) {
             console.log(error);
@@ -54,19 +71,15 @@ const Sidebar = () => {
             />
 
             <div className="list-group">
-
                 {friends.map((friend) => (
                     <button
                         key={friend._id}
                         className="list-group-item list-group-item-action"
-                        onClick={() =>
-                            handleSelectFriend(friend)
-                        }
+                        onClick={() => handleSelectFriend(friend)}
                     >
                         {friend.name}
                     </button>
                 ))}
-
             </div>
         </div>
     );

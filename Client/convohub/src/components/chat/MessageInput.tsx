@@ -1,18 +1,48 @@
 "use client";
 
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import { RootState } from "@/redux/store";
+import { addMessage } from "@/redux/slices/conversationSlice";
+
+import { sendMessage } from "@/services/message";
 
 const MessageInput = () => {
 
-    const [message, setMessage] = useState("");
+    const [content, setContent] = useState("");
 
-    const handleSend = () => {
+    const dispatch = useDispatch();
 
-        if (!message.trim()) return;
+    const { selectedConversation } = useSelector(
+        (state: RootState) => state.conversation
+    );
 
-        console.log(message);
+    const handleSendMessage = async () => {
 
-        setMessage("");
+        if (!content.trim()) return;
+
+        if (!selectedConversation) return;
+
+        try {
+
+            const response = await sendMessage(
+                selectedConversation.conversationId,
+                content
+            );
+
+            if (response.success) {
+
+                dispatch(
+                    addMessage(response.data)
+                );
+
+                setContent("");
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
@@ -24,15 +54,15 @@ const MessageInput = () => {
                     type="text"
                     className="form-control"
                     placeholder="Type a message..."
-                    value={message}
+                    value={content}
                     onChange={(e) =>
-                        setMessage(e.target.value)
+                        setContent(e.target.value)
                     }
                 />
 
                 <button
                     className="btn btn-primary"
-                    onClick={handleSend}
+                    onClick={handleSendMessage}
                 >
                     Send
                 </button>

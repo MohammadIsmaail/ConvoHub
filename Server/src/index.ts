@@ -51,7 +51,10 @@ io.use((socket, next) => {
 io.on("connection", (socket) => {
   const user = socket.data.user;
   const userId = user.id;
+  // Online User Add
   onlineUsers.set(userId, socket.id);
+
+  io.emit("onlineUsers",Array.from(onlineUsers.keys()));
   console.log("User Connected:", socket.id);
   console.log("User:", socket.data.user);
 
@@ -141,10 +144,18 @@ socket.on("markSeen",async(conversationId:string)=>{
     })
 })
 
-  socket.on("disconnect", () => {
+
+
+socket.on("disconnect", () => {
     onlineUsers.delete(userId);
+
+    io.emit(
+        "onlineUsers",
+        Array.from(onlineUsers.keys())
+    );
+
     console.log("User Disconnected:", socket.id);
-  });
+});
 });
 app.use("/user", userRouter);
 // Error Handler

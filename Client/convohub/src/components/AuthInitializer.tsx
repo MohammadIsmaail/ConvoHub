@@ -1,23 +1,31 @@
-// Redux Hydrate prefill ko kehete hai  Persist Login
-"use client"
+"use client";
 
-import { setToken,setUser,setIsAuthenticated} from "@/redux/slices/authSlice"
-import { useEffect } from "react"
-import { useDispatch } from "react-redux"
+import {
+    setToken,
+    setUser,
+    setIsAuthenticated,
+    setLoading,
+} from "@/redux/slices/authSlice";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
-const AuthInitializer = ()=>{
-    const dispatch = useDispatch()
+const AuthInitializer = () => {
+    const dispatch = useDispatch();
 
-    useEffect(()=>{
+    useEffect(() => {
         const token = localStorage.getItem("token");
         const user = localStorage.getItem("user");
-        if(token && user){
-            dispatch(setToken(token))
-            dispatch(setUser(JSON.parse(user))) 
-            dispatch(setIsAuthenticated(true))
-        }
-    },[dispatch])
-    return null
-}
 
-export default AuthInitializer
+        if (token && user) {
+            dispatch(setToken(token));
+            dispatch(setUser(JSON.parse(user)));
+            dispatch(setIsAuthenticated(true));
+        }
+
+        dispatch(setLoading(false));
+    }, [dispatch]);
+
+    return null;
+};
+
+export default AuthInitializer;
