@@ -1,6 +1,6 @@
 import express from "express";
 import { UserLoginController, UserRegisterController } from "../Controller/userauth";
-import { UserProfileController } from "../Controller/userRelatedData";
+import { UserProfileController,GetAllUsersController } from "../Controller/userRelatedData";
 import middlewareToken from "../Helper/TokenMiddleware";
 import { AcceptFriendRequestController, FriendRequestController, FriendsListController, 
     GetPendingRequestsController, RejectFriendRequestController} from "../Controller/FriendRequest";
@@ -13,6 +13,11 @@ userRouter.post("/register",UserRegisterController);
 userRouter.post("/login",UserLoginController);
 // User Profile
 userRouter.get("/profile", middlewareToken, UserProfileController);
+userRouter.get(
+    "/users",
+    middlewareToken,
+    GetAllUsersController
+);
 
 //  Friend Request Routes
 userRouter.post("/friend-request/send", middlewareToken, FriendRequestController);

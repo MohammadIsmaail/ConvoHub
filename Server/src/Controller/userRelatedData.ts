@@ -20,3 +20,33 @@ export const UserProfileController = async (req:any,res:any)=>{
         return createResponse(res,false,500,error.message,[],true);
     }
 }
+export const GetAllUsersController = async (req:any,res:any)=>{
+    try{
+
+        const { id } = req.user;
+
+        const users = await UserModel.find(
+            { _id: { $ne: id } },
+            "name email profileImage"
+        );
+
+        return createResponse(
+            res,
+            true,
+            200,
+            "Users fetched successfully",
+            users,
+            false
+        );
+
+    }catch(error:any){
+        return createResponse(
+            res,
+            false,
+            500,
+            error.message,
+            [],
+            true
+        );
+    }
+}

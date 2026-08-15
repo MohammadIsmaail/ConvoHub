@@ -40,19 +40,23 @@ const Login = () => {
   const onSubmit = async (data: LoginData) => {
     try {
       const response = await loginUser(data);
-
-
       if (response.success) {
-        localStorage.setItem( "token",response.token);
+        
+        localStorage.setItem("token",response.data.token);
+        console.log("TOKEN AFTER SAVE =>",localStorage.getItem("token"));
+         
+        localStorage.setItem("token",response.data.token);
         localStorage.setItem("user",JSON.stringify(response.data));
-        dispatch(setToken(response.token));
+        dispatch(setToken(response.data.token));
         dispatch(setUser(response.data));
         dispatch(setIsAuthenticated(true));
 
         toast.success(response.message);
-
         reset();
+        setTimeout(() => {router.push("/chat");}, 1500);
 
+        toast.success(response.message);
+        reset();
         setTimeout(() => {
           router.push("/chat");
         }, 1500);

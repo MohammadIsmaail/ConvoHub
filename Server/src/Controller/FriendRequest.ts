@@ -69,6 +69,7 @@ export const AcceptFriendRequestController = async (req:any,res:any)=>{
             }
                 request.status = "accepted";
                 await request.save();
+                console.log(request);
                 return createResponse(res, true, 200, "Friend request accepted successfully", request, false);
         }
 

@@ -37,41 +37,30 @@ const MessageInput = () => {
     };
 
     return (
-        <div className="border-top p-3">
+<div className="border-top p-3 bg-white">
 
-            <div className="input-group">
+    <div className="input-group">
 
-                <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Type a message..."
-                    value={content}
-                    onChange={(e) => {
+        <input
+            type="text"
+            className="form-control rounded-start-pill"
+            placeholder="Type a message..."
+            value={content}
+            onChange={(e) =>
+                setContent(e.target.value)
+            }
+        />
 
-                        setContent(e.target.value);
+        <button
+            className="btn btn-primary rounded-end-pill"
+            onClick={handleSendMessage}
+        >
+            Send
+        </button>
 
-                        const socket = getSocket();
+    </div>
 
-                        if (selectedConversation) {
-                            socket?.emit(
-                                "typing",
-                                (selectedConversation as any)
-                                    .conversationId
-                            );
-                        }
-                    }}
-                />
-
-                <button
-                    className="btn btn-primary"
-                    onClick={handleSendMessage}
-                >
-                    Send
-                </button>
-
-            </div>
-
-        </div>
+</div>
     );
 };
 

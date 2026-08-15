@@ -32,33 +32,23 @@ const ChatHeader = () => {
     );
 
     return (
-        <div className="border-bottom p-3 d-flex align-items-center">
+       <div className="border-bottom p-3 bg-white">
 
-            <div>
+    <h5 className="mb-0 fw-bold">
+        {(selectedConversation as any).friend.name}
+    </h5>
 
-                <h5 className="mb-0">
-                    {(selectedConversation as any).friend.name}
-                </h5>
+    <small
+        className={
+            isOnline
+                ? "text-success"
+                : "text-secondary"
+        }
+    >
+        ● {isOnline ? "Online" : "Offline"}
+    </small>
 
-                <small
-                    className={
-                        isTyping
-                            ? "text-primary"
-                            : isOnline
-                            ? "text-success"
-                            : "text-secondary"
-                    }
-                >
-                    {isTyping
-                        ? "Typing..."
-                        : isOnline
-                        ? "Online"
-                        : "Offline"}
-                </small>
-
-            </div>
-
-        </div>
+</div>
     );
 };
 
