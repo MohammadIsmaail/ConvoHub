@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 
@@ -8,6 +9,14 @@ const MessageContainer = () => {
     const { messages } = useSelector(
         (state: RootState) => state.conversation
     );
+
+    const bottomRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        bottomRef.current?.scrollIntoView({
+            behavior: "smooth"
+        });
+    }, [messages]);
 
     return (
         <div
@@ -24,16 +33,20 @@ const MessageContainer = () => {
                 </div>
             ) : (
                 messages.map((message: any) => (
+
                     <div
                         key={message._id}
                         className="mb-3"
                     >
-                        <div className="badge text-bg-primary">
+                        <div className="badge text-bg-primary p-2">
                             {message.content}
                         </div>
                     </div>
+
                 ))
             )}
+
+            <div ref={bottomRef}></div>
 
         </div>
     );

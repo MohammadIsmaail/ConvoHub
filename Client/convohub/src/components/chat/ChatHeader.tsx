@@ -13,6 +13,10 @@ const ChatHeader = () => {
         (state: RootState) => state.onlineUsers
     );
 
+    const { isTyping } = useSelector(
+        (state: RootState) => state.typing
+    );
+
     if (!selectedConversation) {
         return (
             <div className="border-bottom p-3">
@@ -31,25 +35,31 @@ const ChatHeader = () => {
         <div className="border-bottom p-3 d-flex align-items-center">
 
             <div>
+
                 <h5 className="mb-0">
                     {(selectedConversation as any).friend.name}
                 </h5>
 
                 <small
                     className={
-                        isOnline
+                        isTyping
+                            ? "text-primary"
+                            : isOnline
                             ? "text-success"
                             : "text-secondary"
                     }
                 >
-                    {isOnline
+                    {isTyping
+                        ? "Typing..."
+                        : isOnline
                         ? "Online"
                         : "Offline"}
                 </small>
+
             </div>
 
         </div>
     );
 };
 
-export default ChatHeader;                    
+export default ChatHeader;

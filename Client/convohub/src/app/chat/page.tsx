@@ -14,6 +14,7 @@ import { connectSocket } from "@/services/socket";
 
 import { setOnlineUsers } from "@/redux/slices/onlineUsersSlice";
 import { addMessage } from "@/redux/slices/conversationSlice";
+import { setTyping , stopTyping} from "@/redux/slices/typingSlice";
 
 const ChatPage = () => {
 
@@ -23,29 +24,36 @@ const ChatPage = () => {
         (state: RootState) => state.auth.token
     );
 
-    useEffect(() => {
+   useEffect(() => {
 
-        if (!token) return;
+    if (!token) return;
 
-        const socket = connectSocket(token);
+    const socket = connectSocket(token);
 
-        // Online Users
-        socket.on("onlineUsers", (users) => {
-            dispatch(setOnlineUsers(users));
-        });
+    socket.on("onlineUsers", (users) => {
+        dispatch(setOnlineUsers(users));
+    });
 
-        // Real Time Message Receive
-        socket.on("newMessage", (message) => {
-            dispatch(addMessage(message));
-        });
+    socket.on("newMessage", (message) => {
+        dispatch(addMessage(message));
+    });
 
-        return () => {
-            socket.off("onlineUsers");
-            socket.off("newMessage");
-        };
+    socket.on("userTyping", () => {
+        dispatch(setTyping());
+    });
 
-    }, [token, dispatch]);
+    socket.on("userStopTyping", () => {
+        dispatch(stopTyping());
+    });
 
+    return () => {
+        socket.off("onlineUsers");
+        socket.off("newMessage");
+        socket.off("userTyping");
+        socket.off("userStopTyping");
+    };
+
+}, [token, dispatch]);
     return (
         <ProtectedRoute>
             <div className="container-fluid vh-100">

@@ -28,6 +28,11 @@ const MessageInput = () => {
             content,
         });
 
+        socket?.emit(
+            "stopTyping",
+            (selectedConversation as any).conversationId
+        );
+
         setContent("");
     };
 
@@ -41,9 +46,20 @@ const MessageInput = () => {
                     className="form-control"
                     placeholder="Type a message..."
                     value={content}
-                    onChange={(e) =>
-                        setContent(e.target.value)
-                    }
+                    onChange={(e) => {
+
+                        setContent(e.target.value);
+
+                        const socket = getSocket();
+
+                        if (selectedConversation) {
+                            socket?.emit(
+                                "typing",
+                                (selectedConversation as any)
+                                    .conversationId
+                            );
+                        }
+                    }}
                 />
 
                 <button
