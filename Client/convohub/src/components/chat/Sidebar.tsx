@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { getFriends } from "@/services/friend";
 import { createConversation } from "@/services/conversation";
 import { getMessages } from "@/services/message";
+import { getSocket } from "@/services/socket";
 
 import {
     setSelectedConversation,
@@ -40,6 +41,11 @@ const Sidebar = () => {
                         friend,
                     })
                 );
+            const socket = getSocket();
+
+            if (socket) {
+                socket.emit("joinConversation",response.data._id);
+            }
 
                 const messageResponse = await getMessages(
                     response.data._id

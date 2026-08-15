@@ -1,48 +1,34 @@
 "use client";
 
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { RootState } from "@/redux/store";
-import { addMessage } from "@/redux/slices/conversationSlice";
-
-import { sendMessage } from "@/services/message";
+import { getSocket } from "@/services/socket";
 
 const MessageInput = () => {
 
     const [content, setContent] = useState("");
 
-    const dispatch = useDispatch();
-
     const { selectedConversation } = useSelector(
         (state: RootState) => state.conversation
     );
 
-    const handleSendMessage = async () => {
+    const handleSendMessage = () => {
 
         if (!content.trim()) return;
 
         if (!selectedConversation) return;
 
-        try {
+        const socket = getSocket();
 
-            const response = await sendMessage(
-                selectedConversation.conversationId,
-                content
-            );
+        socket?.emit("sendMessage", {
+            conversationId:
+                (selectedConversation as any).conversationId,
+            content,
+        });
 
-            if (response.success) {
-
-                dispatch(
-                    addMessage(response.data)
-                );
-
-                setContent("");
-            }
-
-        } catch (error) {
-            console.log(error);
-        }
+        setContent("");
     };
 
     return (

@@ -9,6 +9,10 @@ const ChatHeader = () => {
         (state: RootState) => state.conversation
     );
 
+    const { onlineUsers } = useSelector(
+        (state: RootState) => state.onlineUsers
+    );
+
     if (!selectedConversation) {
         return (
             <div className="border-bottom p-3">
@@ -19,19 +23,33 @@ const ChatHeader = () => {
         );
     }
 
+    const isOnline = onlineUsers.includes(
+        (selectedConversation as any).friend._id
+    );
+
     return (
         <div className="border-bottom p-3 d-flex align-items-center">
+
             <div>
                 <h5 className="mb-0">
-                    {selectedConversation.friend.name}
+                    {(selectedConversation as any).friend.name}
                 </h5>
 
-                <small className="text-success">
-                    Online
+                <small
+                    className={
+                        isOnline
+                            ? "text-success"
+                            : "text-secondary"
+                    }
+                >
+                    {isOnline
+                        ? "Online"
+                        : "Offline"}
                 </small>
             </div>
+
         </div>
     );
 };
 
-export default ChatHeader;
+export default ChatHeader;                    
