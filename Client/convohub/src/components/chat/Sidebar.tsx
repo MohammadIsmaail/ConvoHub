@@ -16,18 +16,19 @@ import {
 const Sidebar = () => {
     const [friends, setFriends] = useState<any[]>([]);
     const dispatch = useDispatch();
+const fetchFriends = async () => {
+    try {
+        const response = await getFriends();
 
-    const fetchFriends = async () => {
-        try {
-            const response = await getFriends();
+        console.log("Friends API Response:", response);
 
-            if (response.success) {
-                setFriends(response.data);
-            }
-        } catch (error) {
-            console.log(error);
+        if (response.success) {
+            setFriends(response.data);
         }
-    };
+    } catch (error) {
+        console.log(error);
+    }
+};
 
     const handleSelectFriend = async (friend: any) => {
         try {
