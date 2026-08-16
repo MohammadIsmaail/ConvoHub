@@ -1,163 +1,213 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import Link from "next/link";
 
+import { RootState } from "@/redux/store";
 import { getFriends } from "@/services/friend";
 import { createConversation } from "@/services/conversation";
 import { getMessages } from "@/services/message";
 import { getSocket } from "@/services/socket";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import Link from "next/link";
 
-import {setSelectedConversation,setMessages,} from "@/redux/slices/conversationSlice";
+import {
+    setSelectedConversation,
+    setMessages,
+} from "@/redux/slices/conversationSlice";
 
 const Sidebar = () => {
     const [friends, setFriends] = useState<any[]>([]);
+
     const dispatch = useDispatch();
-     const { token, isLoading } = useSelector(
+
+    const { token, isLoading } = useSelector(
         (state: RootState) => state.auth
     );
+
     const fetchFriends = async () => {
-    try {
-        const response = await getFriends();
-
-        console.log("Friends API Response:", response);
-
-        if (response.success) {
-            setFriends(response.data);
-        }
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-    const handleSelectFriend = async (friend: any) => {
         try {
-            const response = await createConversation(friend._id);
+            const response = await getFriends();
+
+            console.log(
+                "Friends API Response:",
+                response
+            );
+
             if (response.success) {
-                dispatch(
-                    setSelectedConversation({
-                        conversationId: response.data._id,
-                        friend,
-                    })
-                );
-            const socket = getSocket();
-            if (socket) {
-                socket.emit("joinConversation",response.data._id);
-            }
-                const messageResponse = await getMessages(
-                    response.data._id
+                // Duplicate friends remove
+                const uniqueFriends = Array.from(
+                    new Map(
+                        response.data.map(
+                            (friend: any) => [
+                                friend._id,
+                                friend,
+                            ]
+                        )
+                    ).values()
                 );
 
-                if (messageResponse.success) {
-                    dispatch(
-                        setMessages(messageResponse.data)
-                    );
-                }
+                setFriends(uniqueFriends);
             }
         } catch (error) {
             console.log(error);
         }
     };
 
-useEffect(() => {
-    if (!isLoading && token) {
-        fetchFriends();
-    }
-}, [token, isLoading]);
+    const handleSelectFriend = async (
+        friend: any
+    ) => {
+        try {
+            const response =
+                await createConversation(
+                    friend._id
+                );
+
+            console.log(
+                "Conversation Response =>",
+                response
+            );
+
+            if (response.success) {
+                dispatch(
+                    setSelectedConversation({
+                        conversationId:
+                            response.data._id,
+                        friend,
+                    })
+                );
+
+                const socket = getSocket();
+
+                if (socket) {
+                    socket.emit(
+                        "joinConversation",
+                        response.data._id
+                    );
+                }
+
+                const messageResponse =
+                    await getMessages(
+                        response.data._id
+                    );
+
+                console.log(
+                    "Messages Response =>",
+                    messageResponse
+                );
+
+                if (
+                    messageResponse.success
+                ) {
+                    dispatch(
+                        setMessages(
+                            messageResponse.data
+                        )
+                    );
+                }
+            }
+        } catch (error) {
+            console.log(
+                "Select Friend Error =>",
+                error
+            );
+        }
+    };
+
+    useEffect(() => {
+        if (!isLoading && token) {
+            fetchFriends();
+        }
+    }, [token, isLoading]);
 
     return (
-    <div
-        className="d-flex flex-column h-100 border-end bg-white"
-        style={{ minHeight: "100vh" }}
-    >
-        {/* Header */}
-        <div className="p-3 border-bottom">
-            <h2 className="fw-bold mb-0">
-                Chats
-            </h2>
-        </div>
+        <div
+            className="d-flex flex-column border-end bg-white"
+            style={{ height: "100vh" }}
+        >
+            <div className="p-3 border-bottom">
+                <h3 className="fw-bold mb-0">
+                    Chats
+                </h3>
+            </div>
 
-        {/* Search */}
-        <div className="p-3">
-            <input
-                type="text"
-                className="form-control form-control-lg"
-                placeholder="Search friend..."
-            />
-        </div>
+            <div className="p-3">
+                <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Search friend..."
+                />
+            </div>
 
-        {/* Buttons */}
-        <div className="px-3 pb-3 d-flex gap-2">
-            <Link
-                href="/friends"
-                className="btn btn-primary flex-fill"
-            >
-                Add Friends
-            </Link>
+            <div className="px-3 pb-3 d-flex gap-2">
+                <Link
+                    href="/friends"
+                    className="btn btn-primary flex-fill"
+                >
+                    Add Friends
+                </Link>
 
-            <Link
-                href="/requests"
-                className="btn btn-warning flex-fill"
-            >
-                Requests
-            </Link>
-        </div>
+                <Link
+                    href="/requests"
+                    className="btn btn-warning flex-fill"
+                >
+                    Requests
+                </Link>
+            </div>
 
-        {/* Friend List */}
-        <div className="flex-grow-1 overflow-auto">
-            {friends.length === 0 ? (
-                <div className="text-center text-muted mt-4">
-                    No Friends Found
-                </div>
-            ) : (
-                friends.map((friend) => (
-                    <div
-                        key={friend._id}
-                        onClick={() =>
-                            handleSelectFriend(friend)
-                        }
-                        className="border-bottom p-3"
-                        style={{
-                            cursor: "pointer",
-                            transition: "0.2s",
-                        }}
-                    >
-                        <div className="d-flex align-items-center">
-                            {/* Avatar */}
-                            <div
-                                className="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center me-3"
-                                style={{
-                                    width: "50px",
-                                    height: "50px",
-                                    fontWeight: "bold",
-                                    fontSize: "20px",
-                                }}
-                            >
-                                {friend.name
-                                    ?.charAt(0)
-                                    ?.toUpperCase()}
-                            </div>
+            <div className="flex-grow-1 overflow-auto">
+                {friends.length === 0 ? (
+                    <div className="text-center mt-4 text-muted">
+                        No Friends Found
+                    </div>
+                ) : (
+                    friends.map((friend) => (
+                        <div
+                            key={friend._id}
+                            className="border-bottom p-3"
+                            style={{
+                                cursor: "pointer",
+                            }}
+                            onClick={() =>
+                                handleSelectFriend(
+                                    friend
+                                )
+                            }
+                        >
+                            <div className="d-flex align-items-center">
+                                <div
+                                    className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"
+                                    style={{
+                                        width: "50px",
+                                        height: "50px",
+                                        fontWeight:
+                                            "bold",
+                                    }}
+                                >
+                                    {friend.name
+                                        ?.charAt(
+                                            0
+                                        )
+                                        ?.toUpperCase()}
+                                </div>
 
-                            {/* Name */}
-                            <div>
-                                <h6 className="mb-1 fw-bold">
-                                    {friend.name}
-                                </h6>
+                                <div>
+                                    <div className="fw-bold">
+                                        {
+                                            friend.name
+                                        }
+                                    </div>
 
-                                <small className="text-success">
-                                    Online
-                                </small>
+                                    <small className="text-success">
+                                        Online
+                                    </small>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))
-            )}
+                    ))
+                )}
+            </div>
         </div>
-    </div>
-);
+    );
 };
 
 export default Sidebar;
