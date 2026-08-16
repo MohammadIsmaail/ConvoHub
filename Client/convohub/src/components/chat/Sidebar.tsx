@@ -7,16 +7,19 @@ import { getFriends } from "@/services/friend";
 import { createConversation } from "@/services/conversation";
 import { getMessages } from "@/services/message";
 import { getSocket } from "@/services/socket";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import Link from "next/link";
 
-import {
-    setSelectedConversation,
-    setMessages,
-} from "@/redux/slices/conversationSlice";
+import {setSelectedConversation,setMessages,} from "@/redux/slices/conversationSlice";
 
 const Sidebar = () => {
     const [friends, setFriends] = useState<any[]>([]);
     const dispatch = useDispatch();
-const fetchFriends = async () => {
+     const { token, isLoading } = useSelector(
+        (state: RootState) => state.auth
+    );
+    const fetchFriends = async () => {
     try {
         const response = await getFriends();
 
@@ -33,9 +36,7 @@ const fetchFriends = async () => {
     const handleSelectFriend = async (friend: any) => {
         try {
             const response = await createConversation(friend._id);
-
             if (response.success) {
-
                 dispatch(
                     setSelectedConversation({
                         conversationId: response.data._id,
@@ -43,11 +44,9 @@ const fetchFriends = async () => {
                     })
                 );
             const socket = getSocket();
-
             if (socket) {
                 socket.emit("joinConversation",response.data._id);
             }
-
                 const messageResponse = await getMessages(
                     response.data._id
                 );
@@ -63,9 +62,11 @@ const fetchFriends = async () => {
         }
     };
 
-    useEffect(() => {
+useEffect(() => {
+    if (!isLoading && token) {
         fetchFriends();
-    }, []);
+    }
+}, [token, isLoading]);
 
     return (
         <div className="p-3">
@@ -76,6 +77,23 @@ const fetchFriends = async () => {
                 className="form-control mb-3"
                 placeholder="Search friend..."
             />
+
+            {/* Add Friends */}
+            <div className="d-flex gap-2 mb-3">
+    <Link
+        href="/friends"
+        className="btn btn-primary btn-sm"
+    >
+        Add Friends
+    </Link>
+
+    <Link
+        href="/requests"
+        className="btn btn-warning btn-sm"
+    >
+        Requests
+    </Link>
+</div>
 
             <div className="list-group">
                 {friends.map((friend) => (

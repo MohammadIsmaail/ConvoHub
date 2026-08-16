@@ -15,6 +15,8 @@ const AuthInitializer = () => {
     useEffect(() => {
         const token = localStorage.getItem("token");
         const user = localStorage.getItem("user");
+        console.log("AUTH INIT TOKEN =>", token);
+        console.log("AUTH INIT USER =>", user);
 
         if (token && user) {
             dispatch(setToken(token));

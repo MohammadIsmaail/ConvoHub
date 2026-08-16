@@ -23,6 +23,7 @@ const ChatPage = () => {
     const token = useSelector(
         (state: RootState) => state.auth.token
     );
+    console.log("CHAT TOKEN =>", token);
 
    useEffect(() => {
 

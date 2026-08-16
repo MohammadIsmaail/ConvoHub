@@ -42,24 +42,23 @@ const Login = () => {
       const response = await loginUser(data);
       if (response.success) {
         
-        localStorage.setItem("token",response.data.token);
-        console.log("TOKEN AFTER SAVE =>",localStorage.getItem("token"));
-         
-        localStorage.setItem("token",response.data.token);
-        localStorage.setItem("user",JSON.stringify(response.data));
-        dispatch(setToken(response.data.token));
-        dispatch(setUser(response.data));
-        dispatch(setIsAuthenticated(true));
+        console.log("LOGIN SUCCESS");
 
-        toast.success(response.message);
-        reset();
-        setTimeout(() => {router.push("/chat");}, 1500);
+  localStorage.setItem("token", response.data.token);
 
-        toast.success(response.message);
-        reset();
-        setTimeout(() => {
-          router.push("/chat");
-        }, 1500);
+  console.log("TOKEN SAVED");
+
+  dispatch(setToken(response.data.token));
+
+  console.log("REDUX TOKEN SET");
+
+  dispatch(setUser(response.data));
+
+  dispatch(setIsAuthenticated(true));
+
+  console.log("REDIRECTING TO CHAT");
+
+  router.push("/chat");
       } else {
         toast.error(response.message);
       }
