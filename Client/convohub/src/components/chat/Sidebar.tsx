@@ -1,113 +1,114 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-
-import { getFriends } from "@/services/friend";
-import { createConversation } from "@/services/conversation";
-import { getMessages } from "@/services/message";
-import { getSocket } from "@/services/socket";
+import { getAllUsers, sendFriendRequest } from "@/services/friend";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import Link from "next/link";
 
-import {setSelectedConversation,setMessages,} from "@/redux/slices/conversationSlice";
+const FriendsPage = () => {
+    const [users, setUsers] = useState<any[]>([]);
+    const [sendingId, setSendingId] = useState("");
 
-const Sidebar = () => {
-    const [friends, setFriends] = useState<any[]>([]);
-    const dispatch = useDispatch();
-     const { token, isLoading } = useSelector(
+    const { token, user } = useSelector(
         (state: RootState) => state.auth
     );
-    const fetchFriends = async () => {
-    try {
-        const response = await getFriends();
 
-        console.log("Friends API Response:", response);
-
-        if (response.success) {
-            setFriends(response.data);
-        }
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-    const handleSelectFriend = async (friend: any) => {
+    const fetchUsers = async () => {
         try {
-            const response = await createConversation(friend._id);
+            const response = await getAllUsers();
+
             if (response.success) {
-                dispatch(
-                    setSelectedConversation({
-                        conversationId: response.data._id,
-                        friend,
-                    })
-                );
-            const socket = getSocket();
-            if (socket) {
-                socket.emit("joinConversation",response.data._id);
-            }
-                const messageResponse = await getMessages(
-                    response.data._id
+                const filteredUsers = response.data.filter(
+                    (u: any) => u._id !== user?._id
                 );
 
-                if (messageResponse.success) {
-                    dispatch(
-                        setMessages(messageResponse.data)
-                    );
-                }
+                setUsers(filteredUsers);
             }
         } catch (error) {
             console.log(error);
         }
     };
 
-useEffect(() => {
-    if (!isLoading && token) {
-        fetchFriends();
-    }
-}, [token, isLoading]);
+    const handleSendRequest = async (
+        receiverId: string
+    ) => {
+        try {
+            setSendingId(receiverId);
+
+            const response =
+                await sendFriendRequest(receiverId);
+
+            alert(response.message);
+
+            setUsers((prev) =>
+                prev.map((u) =>
+                    u._id === receiverId
+                        ? {
+                              ...u,
+                              requestSent: true,
+                          }
+                        : u
+                )
+            );
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        if (token) {
+            fetchUsers();
+        }
+    }, [token]);
 
     return (
-        <div className="p-3">
-            <h4>Chats</h4>
+        <div className="container py-4">
+            <h2 className="mb-4">
+                All Users
+            </h2>
 
-            <input
-                type="text"
-                className="form-control mb-3"
-                placeholder="Search friend..."
-            />
-
-            {/* Add Friends */}
-            <div className="d-flex gap-2 mb-3">
-    <Link
-        href="/friends"
-        className="btn btn-primary btn-sm"
-    >
-        Add Friends
-    </Link>
-
-    <Link
-        href="/requests"
-        className="btn btn-warning btn-sm"
-    >
-        Requests
-    </Link>
-</div>
-
-            <div className="list-group">
-                {friends.map((friend) => (
-                    <button
-                        key={friend._id}
-                        className="list-group-item list-group-item-action"
-                        onClick={() => handleSelectFriend(friend)}
+            <div className="row">
+                {users.map((user) => (
+                    <div
+                        key={user._id}
+                        className="col-md-4 mb-3"
                     >
-                        {friend.name}
-                    </button>
+                        <div className="card">
+                            <div className="card-body">
+                                <h5>{user.name}</h5>
+
+                                <p>{user.email}</p>
+
+                                {user.requestSent ? (
+                                    <button
+                                        className="btn btn-secondary"
+                                        disabled
+                                    >
+                                        Request Sent
+                                    </button>
+                                ) : (
+                                    <button
+                                        className="btn btn-primary"
+                                        disabled={
+                                            sendingId ===
+                                            user._id
+                                        }
+                                        onClick={() =>
+                                            handleSendRequest(
+                                                user._id
+                                            )
+                                        }
+                                    >
+                                        Send Request
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
                 ))}
             </div>
         </div>
     );
 };
 
-export default Sidebar;
+export default FriendsPage;
