@@ -1,16 +1,42 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { getSocket } from "@/services/socket";
 
 const MessageContainer = () => {
-    const { messages } = useSelector(
-        (state: RootState) => state.conversation
-    );
+    const { messages, selectedConversation } =
+        useSelector(
+            (state: RootState) =>
+                state.conversation
+        );
 
     const currentUser = useSelector(
         (state: RootState) => state.auth.user as any
     );
+
+    const bottomRef = useRef<HTMLDivElement>(null);
+
+    // Auto Scroll
+    useEffect(() => {
+        bottomRef.current?.scrollIntoView({
+            behavior: "smooth",
+        });
+    }, [messages]);
+
+    // Auto Seen
+    useEffect(() => {
+        if (!selectedConversation) return;
+
+        const socket = getSocket();
+
+        socket?.emit(
+            "markSeen",
+            (selectedConversation as any)
+                .conversationId
+        );
+    }, [messages, selectedConversation]);
 
     return (
         <div
@@ -28,17 +54,16 @@ const MessageContainer = () => {
             ) : (
                 messages.map((message: any) => {
                     const senderId =
-                        typeof message.sender === "object"
+                        typeof message.sender ===
+                        "object"
                             ? message.sender?._id
                             : message.sender;
 
-                    const currentUserId = currentUser?._id;
+                    const currentUserId =
+                        currentUser?._id;
 
-                    const isMe = senderId === currentUserId;
-
-                    console.log("Current User =>", currentUserId);
-                    console.log("Sender =>", senderId);
-                    console.log("isMe =>", isMe);
+                    const isMe =
+                        senderId === currentUserId;
 
                     return (
                         <div
@@ -61,11 +86,14 @@ const MessageContainer = () => {
                                             : "bg-white"
                                     }`}
                                     style={{
-                                        borderRadius: "15px",
+                                        borderRadius:
+                                            "15px",
                                     }}
                                 >
                                     <div>
-                                        {message.content}
+                                        {
+                                            message.content
+                                        }
                                     </div>
 
                                     <div
@@ -77,17 +105,40 @@ const MessageContainer = () => {
                                     >
                                         {new Date(
                                             message.createdAt
-                                        ).toLocaleTimeString([], {
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                        })}
+                                        ).toLocaleTimeString(
+                                            [],
+                                            {
+                                                hour: "2-digit",
+                                                minute: "2-digit",
+                                            }
+                                        )}
                                     </div>
+
+                                    {isMe && (
+                                        <div
+                                            className={`small text-end mt-1 ${
+                                                message.isSeen
+                                                    ? "text-warning"
+                                                    : "text-light"
+                                            }`}
+                                            style={{
+                                                fontSize:
+                                                    "11px",
+                                            }}
+                                        >
+                                            {message.isSeen
+                                                ? "✓✓ Seen"
+                                                : "✓ Sent"}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
                     );
                 })
             )}
+
+            <div ref={bottomRef} />
         </div>
     );
 };

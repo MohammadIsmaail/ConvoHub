@@ -20,13 +20,12 @@ const conversationSlice = createSlice({
         addMessage: (state, action) => {
             state.messages.push(action.payload);
         },
-
         updateMessageSeen: (state, action) => {
-            state.messages = state.messages.map((msg) =>
-                msg._id === action.payload
-                    ? { ...msg, seen: true }
-                    : msg
-            );
+        state.messages = state.messages.map((msg) =>
+        msg._id === action.payload
+            ? { ...msg, isSeen: true }
+            : msg
+          );
         },
 
         clearMessages: (state) => {

@@ -6,15 +6,15 @@ const conversationSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true
-      }
-    ]
+        required: true,
+      },
+    ],
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 
-const ConversationModel = mongoose.model("Conversation", conversationSchema);
+const ConversationModel = mongoose.model("Conversation",conversationSchema);
 
 export default ConversationModel;
