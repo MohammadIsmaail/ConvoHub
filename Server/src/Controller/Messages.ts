@@ -101,7 +101,8 @@ export const CreateConversationController = async (req:any,res:any)=>{
         }
         // 6. Check karo conversation pehle se exist hai?
         // members me senderId aur receiverId dono hone chahiye
-        const isExistConversation = await ConversationModel.findOne({ members: { $all: [senderId, receiverId] } });
+        const isExistConversation = await ConversationModel.findOne({ members: 
+             { $all: [senderId, receiverId] },$expr: {$eq: [{ $size: "$members" }, 2],}, });
         if(isExistConversation){
             return createResponse(res, true, 200, "Conversation already exists", isExistConversation, false);
         }else{
